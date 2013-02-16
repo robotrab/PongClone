@@ -21,6 +21,9 @@ namespace PongClone
         private int screenWidth;
         private int screenHeight;
 
+        private Bat rightBat;
+        private Bat leftBat;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -41,6 +44,9 @@ namespace PongClone
             graphics.PreferredBackBufferWidth = screenWidth;
             graphics.PreferredBackBufferHeight = screenHeight;
             graphics.ApplyChanges();
+
+            rightBat = new Bat(Content, new Vector2(screenWidth, screenHeight), false);
+            leftBat = new Bat(Content, new Vector2(screenWidth, screenHeight), true);
 
             base.Initialize();
         }
@@ -91,6 +97,11 @@ namespace PongClone
             GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
+
+            spriteBatch.Begin();
+            leftBat.Draw(spriteBatch);
+            rightBat.Draw(spriteBatch);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
