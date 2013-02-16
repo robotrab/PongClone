@@ -18,6 +18,8 @@ namespace PongClone
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        private int screenWidth;
+        private int screenHeight;
 
         public Game1()
         {
@@ -34,6 +36,11 @@ namespace PongClone
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            screenWidth = 800;
+            screenHeight = 600;
+            graphics.PreferredBackBufferWidth = screenWidth;
+            graphics.PreferredBackBufferHeight = screenHeight;
+            graphics.ApplyChanges();
 
             base.Initialize();
         }
@@ -81,7 +88,7 @@ namespace PongClone
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
 
