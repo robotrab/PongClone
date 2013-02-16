@@ -21,6 +21,7 @@ namespace PongClone
         private int screenWidth;
         private int screenHeight;
 
+        private Input input;
         private Bat rightBat;
         private Bat leftBat;
 
@@ -47,6 +48,7 @@ namespace PongClone
 
             rightBat = new Bat(Content, new Vector2(screenWidth, screenHeight), false);
             leftBat = new Bat(Content, new Vector2(screenWidth, screenHeight), true);
+            input = new Input();
 
             base.Initialize();
         }
@@ -84,6 +86,17 @@ namespace PongClone
                 this.Exit();
 
             // TODO: Add your update logic here
+            input.Update();
+
+            if (input.LeftDown)
+                leftBat.MoveDown();
+            else if (input.LeftUp)
+                leftBat.MoveUp();
+
+            if (input.RightDown)
+                rightBat.MoveDown();
+            else if (input.RightUp)
+                rightBat.MoveUp();
 
             base.Update(gameTime);
         }

@@ -37,5 +37,26 @@ namespace PongClone
         {
             batch.Draw(texture, position, Color.White);
         }
+
+        private void SetPosition(Vector2 position)
+        {
+            if (position.Y < 0)
+                position.Y = 0;
+
+            if (position.Y > yHeight - size.Height)
+                position.Y = yHeight - size.Height;
+
+            this.position = position;
+        }
+
+        public void MoveUp()
+        {
+            SetPosition(position + new Vector2(0, -moveSpeed));
+        }
+
+        public void MoveDown()
+        {
+            SetPosition(position + new Vector2(0, moveSpeed));
+        }
     }
 }
