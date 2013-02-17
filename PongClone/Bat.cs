@@ -64,5 +64,16 @@ namespace PongClone
             size.X = (int)position.X;
             size.Y = (int)position.Y;
         }
+
+        public Rectangle GetSize()
+        {
+            return size;
+        }
+
+        public Vector2 GetPosition()
+        {
+            return position;
+        }
+
     }
 }

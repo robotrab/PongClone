@@ -100,6 +100,19 @@ namespace PongClone
             else if (input.RightUp)
                 rightBat.MoveUp();
 
+            if (ball.GetDirection() > 1.5f * Math.PI || ball.GetDirection() < 0.5f * Math.PI)
+            {
+                if (rightBat.GetSize().Intersects(ball.GetSize()))
+                    ball.BatHit(CheckHitLocation(rightBat));
+                else if (leftBat.GetSize().Intersects(ball.GetSize()))
+                    ball.BatHit(CheckHitLocation(leftBat));
+            }
+
+            if (ball.GetPosition().X > screenWidth)
+                ball.Reset(true);
+            else if (ball.GetPosition().X < 0)
+                ball.Reset(false);
+
             base.Update(gameTime);
         }
 
@@ -120,6 +133,34 @@ namespace PongClone
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private int CheckHitLocation(Bat bat)
+        {
+            int block = 0;
+
+            if (ball.GetPosition().Y < bat.GetPosition().Y + bat.GetSize().Height / 20) 
+                block = 1;
+            else if (ball.GetPosition().Y < bat.GetPosition().Y + bat.GetSize().Height / 10 * 2) 
+                block = 2;
+            else if (ball.GetPosition().Y < bat.GetPosition().Y + bat.GetSize().Height / 10 * 3) 
+                block = 3;
+            else if (ball.GetPosition().Y < bat.GetPosition().Y + bat.GetSize().Height / 10 * 4) 
+                block = 4;
+            else if (ball.GetPosition().Y < bat.GetPosition().Y + bat.GetSize().Height / 10 * 5) 
+                block = 5;
+            else if (ball.GetPosition().Y < bat.GetPosition().Y + bat.GetSize().Height / 10 * 6) 
+                block = 6;
+            else if (ball.GetPosition().Y < bat.GetPosition().Y + bat.GetSize().Height / 10 * 7) 
+                block = 7;
+            else if (ball.GetPosition().Y < bat.GetPosition().Y + bat.GetSize().Height / 10 * 8) 
+                block = 8;
+            else if (ball.GetPosition().Y < bat.GetPosition().Y + bat.GetSize().Height / 20 * 19) 
+                block = 9;
+            else 
+                block = 10;
+
+            return block;
         }
     }
 }
