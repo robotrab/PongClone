@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace PongClone
 {
-    class Ball
+    public class Ball
     {
         private bool isVisible;
         private Vector2 position;
@@ -31,6 +31,11 @@ namespace PongClone
             position = resetPos;
             rand = new Random();
             isVisible = true;
+        }
+
+        public void IncreaseSpeed()
+        {
+            moveSpeed += 0.7f;
         }
 
         public void Draw(SpriteBatch batch)

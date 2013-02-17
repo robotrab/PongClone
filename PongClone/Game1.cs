@@ -57,25 +57,18 @@ namespace PongClone
             // TODO: Add your initialization logic here
             screenWidth = 800;
             screenHeight = 600;
+            menu = new Menu();
+            gamestate = GameStates.Menu;
+            resetTimer = 0;
+            resetTimerInUse = true;
+            lastScored = false;
             graphics.PreferredBackBufferWidth = screenWidth;
             graphics.PreferredBackBufferHeight = screenHeight;
             graphics.ApplyChanges();
 
-            menu = new Menu();
-            gamestate = GameStates.Menu;
-
-            rightBat = new Bat(Content, new Vector2(screenWidth, screenHeight), false);
-            leftBat = new Bat(Content, new Vector2(screenWidth, screenHeight), true);
             input = new Input();
-            ball = new Ball(Content, new Vector2(screenWidth, screenHeight));
-            ball.Reset(true);
-
-            resetTimer = 0;
-            resetTimerInUse = true;
-            lastScored = false;
-
-            
-            
+            SetUpMulti();
+            ball = new Ball(Content, new Vector2(screenWidth, screenHeight));           
 
             base.Initialize();
         }
@@ -186,12 +179,14 @@ namespace PongClone
                         resetTimerInUse = true;
                         lastScored = true;
                         leftBat.IncrementPoints();
+                        IncreaseSpeed();
                     }
                     else if (ball.GetPosition().X < 0)
                     {
                         resetTimerInUse = true;
                         lastScored = false;
                         rightBat.IncrementPoints();
+                        IncreaseSpeed();
                     }
                 }
             }
@@ -241,11 +236,19 @@ namespace PongClone
             // TODO: Add your drawing code here
 
             spriteBatch.Begin();
-            leftBat.Draw(spriteBatch);
-            rightBat.Draw(spriteBatch);
-            ball.Draw(spriteBatch);
-            spriteBatch.DrawString(arial, leftBat.GetPoints().ToString(), new Vector2(screenWidth / 4 - arial.MeasureString(rightBat.GetPoints().ToString()).X, 20), Color.White);
-            spriteBatch.DrawString(arial, rightBat.GetPoints().ToString(), new Vector2(screenWidth / 4 * 3 - arial.MeasureString(rightBat.GetPoints().ToString()).X, 20), Color.White);
+            if (gamestate == GameStates.Running)
+            {
+                leftBat.Draw(spriteBatch);
+                rightBat.Draw(spriteBatch);
+                ball.Draw(spriteBatch);
+                spriteBatch.DrawString(arial, leftBat.GetPoints().ToString(), new Vector2(screenWidth / 4 - arial.MeasureString(rightBat.GetPoints().ToString()).X, 20), Color.White);
+                spriteBatch.DrawString(arial, rightBat.GetPoints().ToString(), new Vector2(screenWidth / 4 * 3 - arial.MeasureString(rightBat.GetPoints().ToString()).X, 20), Color.White);
+            }
+            else if (gamestate == GameStates.Menu)
+                menu.DrawMenu(spriteBatch, screenWidth, arial);
+            else if (gamestate == GameStates.End)
+                menu.DrawEndScreen(spriteBatch, screenWidth, arial);
+
             spriteBatch.End();
 
             base.Draw(gameTime);
@@ -289,6 +292,13 @@ namespace PongClone
         {
             rightBat = new Bat(Content, new Vector2(screenWidth, screenHeight), false);
             leftBat = new Bat(Content, new Vector2(screenWidth, screenHeight), true);
+        }
+
+        private void IncreaseSpeed()
+        {
+            ball.IncreaseSpeed();
+            leftBat.IncreaseSpeed();
+            rightBat.IncreaseSpeed();
         }
     }
 }

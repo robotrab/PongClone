@@ -19,12 +19,16 @@ namespace PongClone
             if (ball.GetDirection() > 1.5 * Math.PI || ball.GetDirection() < 0.5 * Math.PI)
             {
                 if (ball.GetPosition().Y - 5 > GetPosition().Y + GetSize().Height / 2)
+                {
                     MoveDown();
+                }
                 else if (ball.GetPosition().Y == GetPosition().Y + GetSize().Height / 2)
                 {
                 }
-                else if (ball.GetPosition().Y + 5 > GetPosition().Y + GetSize().Height / 2)
+                else if (ball.GetPosition().Y + 5 < GetPosition().Y + GetSize().Height / 2)
+                {
                     MoveUp();
+                }
             }
 
             base.UpdatePosition(ball);

@@ -11,10 +11,10 @@ namespace PongClone
     //private Bat rightBat;
     //private Bat leftBat;
 
-    class Bat
+    public class Bat
     {
         private Vector2 position;
-        private int moveSpeed;
+        private float moveSpeed;
         private Rectangle size;
         private int points;
         private int yHeight;
@@ -22,7 +22,7 @@ namespace PongClone
 
         public Bat(ContentManager content, Vector2 screenSize, bool side)
         {
-            moveSpeed = 6;
+            moveSpeed = 6f;
             points = 0;
             texture = content.Load<Texture2D>("bat");
             size = new Rectangle(0, 0, texture.Width, texture.Height);
@@ -85,5 +85,9 @@ namespace PongClone
             return points;
         }
 
+        public void IncreaseSpeed()
+        {
+            moveSpeed += 0.6f;
+        }
     }
 }
