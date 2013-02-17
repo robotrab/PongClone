@@ -51,6 +51,7 @@ namespace PongClone
             leftBat = new Bat(Content, new Vector2(screenWidth, screenHeight), true);
             input = new Input();
             ball = new Ball(Content, new Vector2(screenWidth, screenHeight));
+            ball.Reset(true);
 
             base.Initialize();
         }
@@ -89,6 +90,9 @@ namespace PongClone
 
             // TODO: Add your update logic here
             input.Update();
+            ball.UpdatePosition();
+            leftBat.UpdatePosition(ball);
+            rightBat.UpdatePosition(ball);
 
             if (input.LeftDown)
                 leftBat.MoveDown();
@@ -104,7 +108,10 @@ namespace PongClone
             {
                 if (rightBat.GetSize().Intersects(ball.GetSize()))
                     ball.BatHit(CheckHitLocation(rightBat));
-                else if (leftBat.GetSize().Intersects(ball.GetSize()))
+            }
+            else 
+            {
+                if (leftBat.GetSize().Intersects(ball.GetSize()))
                     ball.BatHit(CheckHitLocation(leftBat));
             }
 
