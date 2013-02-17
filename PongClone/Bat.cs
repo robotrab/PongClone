@@ -75,5 +75,15 @@ namespace PongClone
             return position;
         }
 
+        public void IncrementPoints()
+        {
+            points++;
+        }
+
+        public int GetPoints()
+        {
+            return points;
+        }
+
     }
 }

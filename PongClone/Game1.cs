@@ -20,11 +20,15 @@ namespace PongClone
         SpriteBatch spriteBatch;
         private int screenWidth;
         private int screenHeight;
+        SpriteFont arial;
 
         private Input input;
         private Bat rightBat;
         private Bat leftBat;
         private Ball ball;
+        private int resetTimer;
+        private bool resetTimerInUse;
+        private bool lastScored;
 
         public Game1()
         {
@@ -53,6 +57,10 @@ namespace PongClone
             ball = new Ball(Content, new Vector2(screenWidth, screenHeight));
             ball.Reset(true);
 
+            resetTimer = 0;
+            resetTimerInUse = true;
+            lastScored = false;
+
             base.Initialize();
         }
 
@@ -64,6 +72,7 @@ namespace PongClone
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            arial = Content.Load<SpriteFont>("Arial");
 
             // TODO: use this.Content to load your game content here
         }
@@ -90,9 +99,18 @@ namespace PongClone
 
             // TODO: Add your update logic here
             input.Update();
-            ball.UpdatePosition();
-            leftBat.UpdatePosition(ball);
-            rightBat.UpdatePosition(ball);
+            if (resetTimerInUse)
+            {
+                resetTimer++;
+                ball.Stop();
+            }
+
+            if (resetTimer == 120)
+            {
+                resetTimerInUse = false;
+                ball.Reset(lastScored);
+                resetTimer = 0;
+            }
 
             if (input.LeftDown)
                 leftBat.MoveDown();
@@ -104,21 +122,33 @@ namespace PongClone
             else if (input.RightUp)
                 rightBat.MoveUp();
 
+            leftBat.UpdatePosition(ball);
+            rightBat.UpdatePosition(ball);
+            ball.UpdatePosition();
+
             if (ball.GetDirection() > 1.5f * Math.PI || ball.GetDirection() < 0.5f * Math.PI)
             {
                 if (rightBat.GetSize().Intersects(ball.GetSize()))
                     ball.BatHit(CheckHitLocation(rightBat));
             }
-            else 
-            {
-                if (leftBat.GetSize().Intersects(ball.GetSize()))
-                    ball.BatHit(CheckHitLocation(leftBat));
-            }
+            else if (leftBat.GetSize().Intersects(ball.GetSize()))
+                 ball.BatHit(CheckHitLocation(leftBat));
 
-            if (ball.GetPosition().X > screenWidth)
-                ball.Reset(true);
-            else if (ball.GetPosition().X < 0)
-                ball.Reset(false);
+            if (!resetTimerInUse)
+            {
+                if (ball.GetPosition().X > screenWidth)
+                {
+                    resetTimerInUse = true;
+                    lastScored = true;
+                    leftBat.IncrementPoints();
+                }
+                else if (ball.GetPosition().X < 0)
+                {
+                    resetTimerInUse = true;
+                    lastScored = false;
+                    rightBat.IncrementPoints();
+                }
+            }
 
             base.Update(gameTime);
         }
@@ -137,6 +167,8 @@ namespace PongClone
             leftBat.Draw(spriteBatch);
             rightBat.Draw(spriteBatch);
             ball.Draw(spriteBatch);
+            spriteBatch.DrawString(arial, leftBat.GetPoints().ToString(), new Vector2(screenWidth / 4 - arial.MeasureString(rightBat.GetPoints().ToString()).X, 20), Color.White);
+            spriteBatch.DrawString(arial, rightBat.GetPoints().ToString(), new Vector2(screenWidth / 4 * 3 - arial.MeasureString(rightBat.GetPoints().ToString()).X, 20), Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);
