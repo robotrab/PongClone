@@ -58,5 +58,11 @@ namespace PongClone
         {
             SetPosition(position + new Vector2(0, moveSpeed));
         }
+
+        public virtual void UpdatePosition(Ball ball)
+        {
+            size.X = (int)position.X;
+            size.Y = (int)position.Y;
+        }
     }
 }

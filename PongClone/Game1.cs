@@ -24,6 +24,7 @@ namespace PongClone
         private Input input;
         private Bat rightBat;
         private Bat leftBat;
+        private Ball ball;
 
         public Game1()
         {
@@ -49,6 +50,7 @@ namespace PongClone
             rightBat = new Bat(Content, new Vector2(screenWidth, screenHeight), false);
             leftBat = new Bat(Content, new Vector2(screenWidth, screenHeight), true);
             input = new Input();
+            ball = new Ball(Content, new Vector2(screenWidth, screenHeight));
 
             base.Initialize();
         }
@@ -114,6 +116,7 @@ namespace PongClone
             spriteBatch.Begin();
             leftBat.Draw(spriteBatch);
             rightBat.Draw(spriteBatch);
+            ball.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);
