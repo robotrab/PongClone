@@ -29,6 +29,16 @@ namespace PongClone
         private int resetTimer;
         private bool resetTimerInUse;
         private bool lastScored;
+        public static GameStates gamestate;
+        Menu menu;
+
+        public enum GameStates
+        {
+            Menu,
+            Running,
+            End
+        }
+
 
         public Game1()
         {
@@ -60,6 +70,9 @@ namespace PongClone
             resetTimer = 0;
             resetTimerInUse = true;
             lastScored = false;
+
+            gamestate = GameStates.Menu;
+            menu = new Menu();
 
             base.Initialize();
         }
@@ -99,56 +112,102 @@ namespace PongClone
 
             // TODO: Add your update logic here
             input.Update();
-            if (resetTimerInUse)
+
+            if (gamestate == GameStates.Running)
             {
-                resetTimer++;
-                ball.Stop();
-            }
-
-            if (resetTimer == 120)
-            {
-                resetTimerInUse = false;
-                ball.Reset(lastScored);
-                resetTimer = 0;
-            }
-
-            if (input.LeftDown)
-                leftBat.MoveDown();
-            else if (input.LeftUp)
-                leftBat.MoveUp();
-
-            if (input.RightDown)
-                rightBat.MoveDown();
-            else if (input.RightUp)
-                rightBat.MoveUp();
-
-            leftBat.UpdatePosition(ball);
-            rightBat.UpdatePosition(ball);
-            ball.UpdatePosition();
-
-            if (ball.GetDirection() > 1.5f * Math.PI || ball.GetDirection() < 0.5f * Math.PI)
-            {
-                if (rightBat.GetSize().Intersects(ball.GetSize()))
-                    ball.BatHit(CheckHitLocation(rightBat));
-            }
-            else if (leftBat.GetSize().Intersects(ball.GetSize()))
-                 ball.BatHit(CheckHitLocation(leftBat));
-
-            if (!resetTimerInUse)
-            {
-                if (ball.GetPosition().X > screenWidth)
+                if (leftBat.GetPoints() > 9)
                 {
-                    resetTimerInUse = true;
-                    lastScored = true;
-                    leftBat.IncrementPoints();
+                    menu.InfoText = "Left Player Wins";
+                    gamestate = GameStates.End;
                 }
-                else if (ball.GetPosition().X < 0)
+                else if (rightBat.GetPoints() > 9)
                 {
-                    resetTimerInUse = true;
-                    lastScored = false;
-                    rightBat.IncrementPoints();
+                    menu.InfoText = "Right Player Wins";
+                    gamestate = GameStates.End;
+                }
+
+                if (resetTimerInUse)
+                {
+                    resetTimer++;
+                    ball.Stop();
+                }
+
+                if (resetTimer == 120)
+                {
+                    resetTimerInUse = false;
+                    ball.Reset(lastScored);
+                    resetTimer = 0;
+                }
+
+                if (input.LeftDown)
+                    leftBat.MoveDown();
+                else if (input.LeftUp)
+                    leftBat.MoveUp();
+
+                if (input.RightDown)
+                    rightBat.MoveDown();
+                else if (input.RightUp)
+                    rightBat.MoveUp();
+
+                leftBat.UpdatePosition(ball);
+                rightBat.UpdatePosition(ball);
+                ball.UpdatePosition();
+
+                if (ball.GetDirection() > 1.5f * Math.PI || ball.GetDirection() < 0.5f * Math.PI)
+                {
+                    if (rightBat.GetSize().Intersects(ball.GetSize()))
+                        ball.BatHit(CheckHitLocation(rightBat));
+                }
+                else if (leftBat.GetSize().Intersects(ball.GetSize()))
+                    ball.BatHit(CheckHitLocation(leftBat));
+
+                if (!resetTimerInUse)
+                {
+                    if (ball.GetPosition().X > screenWidth)
+                    {
+                        resetTimerInUse = true;
+                        lastScored = true;
+                        leftBat.IncrementPoints();
+                    }
+                    else if (ball.GetPosition().X < 0)
+                    {
+                        resetTimerInUse = true;
+                        lastScored = false;
+                        rightBat.IncrementPoints();
+                    }
                 }
             }
+            else if (gamestate == GameStates.Menu)
+            {
+                if (input.RightDown || input.LeftDown)
+                    menu.Iterator++;
+                else if (input.RightUp || input.LeftUp)
+                    menu.Iterator--;
+
+                if (input.MenuSelect)
+                {
+                    if (menu.Iterator == 0)
+                    {
+                        gamestate = GameStates.Running;
+                        SetUpSingle();
+                    }
+                    else if (menu.Iterator == 1)
+                    {
+                        gamestate = GameStates.Running;
+                        SetUpMulti();
+                    }
+                    else if (menu.Iterator == 2)
+                        this.Exit();
+
+                    menu.Iterator = 0;
+                }
+            }
+            else if (gamestate == GameStates.End)
+            {
+                if (input.MenuSelect)
+                    gamestate = GameStates.Menu;
+            }
+
 
             base.Update(gameTime);
         }
@@ -200,6 +259,17 @@ namespace PongClone
                 block = 10;
 
             return block;
+        }
+
+        private void SetUpSingle()
+        {
+
+        }
+
+        private void SetUpMulti()
+        {
+            rightBat = new Bat(Content, new Vector2(screenWidth, screenHeight), false);
+            leftBat = new Bat(Content, new Vector2(screenWidth, screenHeight), true);
         }
     }
 }
