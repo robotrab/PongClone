@@ -20,7 +20,7 @@ namespace PongClone
         SpriteBatch spriteBatch;
         private int screenWidth;
         private int screenHeight;
-        SpriteFont arial;
+        private SpriteFont arial;
 
         private Input input;
         private Bat rightBat;
@@ -30,7 +30,7 @@ namespace PongClone
         private bool resetTimerInUse;
         private bool lastScored;
         public static GameStates gamestate;
-        Menu menu;
+        private Menu menu;
 
         public enum GameStates
         {
@@ -61,6 +61,9 @@ namespace PongClone
             graphics.PreferredBackBufferHeight = screenHeight;
             graphics.ApplyChanges();
 
+            menu = new Menu();
+            gamestate = GameStates.Menu;
+
             rightBat = new Bat(Content, new Vector2(screenWidth, screenHeight), false);
             leftBat = new Bat(Content, new Vector2(screenWidth, screenHeight), true);
             input = new Input();
@@ -71,8 +74,8 @@ namespace PongClone
             resetTimerInUse = true;
             lastScored = false;
 
-            gamestate = GameStates.Menu;
-            menu = new Menu();
+            
+            
 
             base.Initialize();
         }
@@ -139,15 +142,30 @@ namespace PongClone
                     resetTimer = 0;
                 }
 
-                if (input.LeftDown)
-                    leftBat.MoveDown();
-                else if (input.LeftUp)
-                    leftBat.MoveUp();
+                if (rightBat.GetType() != typeof(PongClone.AIBat))
+                {
+                    if (input.LeftDown)
+                        leftBat.MoveDown();
+                    else if (input.LeftUp)
+                        leftBat.MoveUp();
 
-                if (input.RightDown)
-                    rightBat.MoveDown();
-                else if (input.RightUp)
-                    rightBat.MoveUp();
+                    if (input.RightDown)
+                        rightBat.MoveDown();
+                    else if (input.RightUp)
+                        rightBat.MoveUp();
+                }
+                else if (rightBat.GetType() == typeof(PongClone.AIBat))
+                {
+                    if (input.LeftDown)
+                        leftBat.MoveDown();
+                    else if (input.LeftUp)
+                        leftBat.MoveUp();
+
+                    if (input.RightDown)
+                        leftBat.MoveDown();
+                    else if (input.RightUp)
+                        leftBat.MoveUp();
+                }
 
                 leftBat.UpdatePosition(ball);
                 rightBat.UpdatePosition(ball);
@@ -263,7 +281,8 @@ namespace PongClone
 
         private void SetUpSingle()
         {
-
+            rightBat = new AIBat(Content, new Vector2(screenWidth, screenHeight), false);
+            leftBat = new Bat(Content, new Vector2(screenWidth, screenHeight), true);
         }
 
         private void SetUpMulti()

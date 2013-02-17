@@ -13,22 +13,46 @@ namespace PongClone
 
         public bool RightUp
         {
-            get { return keyboardState.IsKeyDown(Keys.Up); }
+            get 
+            { 
+                if (Game1.gamestate == Game1.GameStates.Menu)
+                    return keyboardState.IsKeyDown(Keys.Up) && lastState.IsKeyUp(Keys.Up);
+                else
+                    return keyboardState.IsKeyDown(Keys.Up);
+            }
         }
 
         public bool RightDown
         {
-            get { return keyboardState.IsKeyDown(Keys.Down); }
+            get
+            {
+                if (Game1.gamestate == Game1.GameStates.Menu)
+                    return keyboardState.IsKeyDown(Keys.Down) && lastState.IsKeyUp(Keys.Down);
+                else
+                    return keyboardState.IsKeyDown(Keys.Down);
+            }
         }
 
         public bool LeftUp
         {
-            get { return keyboardState.IsKeyDown(Keys.W); }
+            get
+            {
+                if (Game1.gamestate == Game1.GameStates.Menu)
+                    return keyboardState.IsKeyDown(Keys.W) && lastState.IsKeyUp(Keys.W);
+                else
+                    return keyboardState.IsKeyDown(Keys.W);
+            }
         }
 
         public bool LeftDown
         {
-            get { return keyboardState.IsKeyDown(Keys.S); }
+            get
+            {
+                if (Game1.gamestate == Game1.GameStates.Menu)
+                    return keyboardState.IsKeyDown(Keys.S) && lastState.IsKeyUp(Keys.S);
+                else
+                    return keyboardState.IsKeyDown(Keys.S);
+            }
         }
 
         public bool MenuSelect
